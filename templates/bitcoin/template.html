@@ -1,0 +1,205 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+function myFunction() {
+    var node = document.createElement("p");
+    var textnode = document.createTextNode("Water");
+    node.appendChild(textnode);
+    document.body.appendChild(node);
+}
+function createBreak() {
+	var node = document.createElement("br");
+	document.body.appendChild(node);
+}
+
+function headNode() 
+{
+    var canvas = document.createElement('canvas');
+    canvas.id = "node";
+    canvas.width = 300;
+    canvas.height = 70;
+    canvas.style.position = "relative";
+    canvas.style.border = "1px solid";
+    canvas.style.marginLeft = "350px";
+    var context1 = canvas.getContext("2d");
+    context1.font = "10px Garamond";
+    context1.fillText('wallet : {{ h_address }}',55,30);
+    context1.fillText('balance : {{ bal }}',55,40);
+    document.body.appendChild(canvas);
+}
+function headLink() {
+    var canvas = document.createElement('canvas');
+    canvas.id = "node";
+    canvas.width = 400;
+    canvas.height = 70;
+    canvas.style.position = "relative";
+    canvas.style.border = "none";
+    canvas.style.marginLeft = "400px";
+    var context1 = canvas.getContext("2d");
+    context1.moveTo(100,0);
+    context1.lineTo(0,70);
+    context1.moveTo(100,0);
+    context1.lineTo(600,180);
+    context1.stroke();
+    document.body.appendChild(canvas);
+}
+
+
+function createLink() {
+	var canvas = document.createElement('canvas');
+	canvas.id = "node";
+	canvas.width = 250;
+	canvas.height = 70;
+	canvas.style.position = "relative";
+	canvas.style.border = "none";
+	canvas.style.marginLeft = "200px";
+	var context1 = canvas.getContext("2d");
+	context1.moveTo(100,0);
+	context1.lineTo(100,100);
+	context1.stroke();
+	document.body.appendChild(canvas);
+}
+function titleNode(title) 
+{
+    var canvas = document.createElement('canvas');
+    canvas.id = "node";
+    canvas.width = 250;
+    canvas.height = 70;
+    canvas.style.position = "relative";
+    canvas.style.border = "1px solid";
+    canvas.style.marginLeft = "200px";
+    var context1 = canvas.getContext("2d");
+    context1.font = "10px Garamond";
+    context1.fillText(title,85,40);
+    document.body.appendChild(canvas);
+}
+function createNode(wallet_address,amount,date_time) 
+{
+	var canvas = document.createElement('canvas');
+	canvas.id = "node";
+	canvas.width = 250;
+	canvas.height = 70;
+	canvas.style.position = "relative";
+	canvas.style.border = "1px solid";
+	canvas.style.marginLeft = "200px";
+	var context1 = canvas.getContext("2d");
+	context1.font = "10px Garamond";
+	context1.fillText("wal : " +wallet_address,55,30);
+	context1.fillText("amt : " +amount,55,40);
+	context1.fillText("time : "+date_time,55,50);
+	document.body.appendChild(canvas);
+}
+(function() {
+    headNode();
+    createBreak();
+    headLink();
+    createBreak();
+	var recieved_nodes = [];
+	var sent_nodes = [];
+
+   {% for node in r_nodes %}
+        var list = []
+        {% for val in node %}
+            list.push('{{ val }}');
+        {% endfor %}
+        recieved_nodes.push(list);
+    {% endfor %}
+
+	{% for node in s_nodes %}
+       var list = []
+        {% for val in node %}
+            list.push('{{ val }}');
+        {% endfor %}
+        sent_nodes.push(list);
+    {% endfor %}
+    console.log(recieved_nodes.length);
+    if(recieved_nodes.length  > sent_nodes.length)
+    {
+        titleNode('To_Wallet');
+        titleNode('From_Wallet');
+        createLink();
+        createLink();
+        createBreak();
+    	var s_length = sent_nodes.length;
+    	var r_length = recieved_nodes.length;
+    	var iterater = 0;
+    	while(iterater < r_length )
+    	{
+    		var date = recieved_nodes[iterater][0];
+    		var amount = recieved_nodes[iterater][1];
+    		var wallet_address = recieved_nodes[iterater][2];
+    		createNode(wallet_address,amount,date)
+    		if(iterater < s_length)
+    		{
+    			date = sent_nodes[iterater][0];
+    			amount = sent_nodes[iterater][1];
+    			wallet_address = sent_nodes[iterater][2];
+    			createNode(wallet_address,amount,date);
+
+    		}
+    		iterater += 1;
+            createBreak();
+            if(iterater < r_length)
+            {
+                createLink();
+            }
+            
+            if(iterater < s_length)
+            {
+                createLink();
+            }
+
+            createBreak();
+    	}
+    }
+    else
+    {
+        titleNode('From_Wallet');
+        titleNode('To_Wallet');
+        createLink();
+        createLink();
+        createBreak();
+
+    	var s_length = sent_nodes.length;
+    	var r_length = recieved_nodes.length;
+    	var iterater = 0;
+    	while(iterater < s_length )
+    	{
+    		var date = sent_nodes[iterater][0];
+			var amount = sent_nodes[iterater][1];
+			var wallet_address = sent_nodes[iterater][2];
+			createNode(wallet_address,amount,date);
+    		
+    		if(iterater < r_length)
+    		{
+    			date = recieved_nodes[iterater][0];
+	    		amount = recieved_nodes[iterater][1];
+	    		wallet_address = recieved_nodes[iterater][2];
+	    		createNode(wallet_address,amount,date);
+
+    		}
+            iterater += 1;
+    		createBreak();
+            if(iterater < s_length)
+            {
+                createLink();
+            }
+            
+            if(iterater < r_length)
+            {
+                createLink();
+            }
+
+            createBreak();
+    		
+
+    	}
+    }
+
+})();
+ 
+</script>
+</body>
+</html>
