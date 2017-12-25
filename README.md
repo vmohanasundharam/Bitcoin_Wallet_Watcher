@@ -14,8 +14,9 @@ start new project in django using following command
 mkdir ~/django
 cd ~/django
 django-admin startproject myproject
+cd myproject
 git clone https://github.com/vmohanasundharam/Bitcoin_Wallet_Watcher.git
-move Bitcoin_Wallet_Watcher/ bitcoin
+mv Bitcoin_Wallet_Watcher/ bitcoin
 </code></pre>
 
 <p>
