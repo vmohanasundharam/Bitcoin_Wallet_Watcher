@@ -16,13 +16,37 @@ class bitcoin(object):
 		self.html = requests.get(url)
 		if self.html.status_code!= 200:
 			self.flag = True
-
 		else:
 			self.html = BeautifulSoup(self.html.content,"html.parser")
 			error = self.html.findAll('p',attrs={"class":"error"})
+			flag = True
+		
+		if len(error) > 0:
+			url =  'https://www.walletexplorer.com/address/'+self.wallet_address
+			self.html = requests.get(url)
+			
+			if self.html.status_code!= 200:
+				self.flag = True
+			else:
+				self.html = BeautifulSoup(self.html.content,"html.parser")
+				error = self.html.findAll('p',attrs={"class":"error"})
+				self.flag = True
+				if len(error) > 0:
+					self.flag = True
+				else:
+					self.wallet_address =  self.html.findAll('a')[1].attrs['href'].replace("/wallet/","")
+					url =  'https://www.walletexplorer.com/wallet/'+self.wallet_address
+					print url
+					self.html = requests.get(url)
+					if self.html.status_code!= 200:
+						self.flag = True
+					else:
+						self.html = BeautifulSoup(self.html.content,"html.parser")
+						error = self.html.findAll('p',attrs={"class":"error"})
+						if len(error) > 0 :
+							self.flag = False
+		else:
 			self.flag = True
-			if len(error) > 0:
-				self.flag = False
 
 
 	def wallet_balance(self):
